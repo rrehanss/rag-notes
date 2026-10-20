@@ -23,5 +23,23 @@ def load_single_document(file_path: Path) -> list[dict]:
     return []
 
 
+def load_documents(directory_path: Path) -> list[dict]:
+    if not directory_path.exists():
+        directory_path.mkdir(parents = True, exist_ok = True)
+        return []
+    
+    all_sections : list[dict] = []
+    for file_path in directory_path.iterdir():
+        if not file_path.is_file():
+            print(f"Skipping FOLDER: {file_path.name}")
+            continue
+        if file_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            print(f"Skipping unsupported file {file_path.name}")
+            continue
+        doc_section = load_single_document(file_path)
+        all_sections.extend(doc_section)
+
+    return all_sections
+                    
 
     

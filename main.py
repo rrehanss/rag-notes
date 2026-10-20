@@ -1,4 +1,7 @@
 from src.config import DOCUMENTS_DIR
-from src.document_loader import load_single_document
+from src.document_loader import load_documents
 
-print(load_single_document(DOCUMENTS_DIR/"sample.txt"))
+docs = load_documents(DOCUMENTS_DIR)
+print(len(docs))
+for doc in docs:
+    print(doc["filename"], "-", doc["text"][:50])
