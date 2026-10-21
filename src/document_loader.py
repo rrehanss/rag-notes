@@ -2,6 +2,18 @@ from pathlib import Path
 import pymupdf
 
 SUPPORTED_EXTENSIONS = { ".pdf", ".txt", ".md"}
+ocr_engine = None 
+
+def get_ocr_engine():
+    global ocr_engine
+    if ocr_engine is None:  
+        try:
+            from rapidocr_onnxruntime import RapidOCR
+            ocr_engine = RapidOCR()
+        except ImportError:
+            ocr_engine = False
+    return ocr_engine
+
 
 def load_single_document(file_path: Path) -> list[dict]:
     ext = file_path.suffix.lower()
@@ -31,6 +43,20 @@ def extract_text_from_pdf(file_path: Path) -> list[dict]:
         for page_index in range(num_pages):
             page = doc[page_index]
             page_text = (page.get_text() or "").strip()
+
+            if len(page_text) < 14:
+                ocr = get_ocr_engine()
+                if ocr:
+                    try:
+                        pix = page.get_pixmap(dpi=150)
+                        image_bytes = pix.tobytes("png")
+                        ocr_result, _ = ocr(image_bytes)
+                        if ocr_result:
+                            ocr_text = "\n".join([line[1] for line in ocr_result]).strip()
+                            if ocr_text:  
+                                page_text = ocr_text
+                    except Exception as ocr_err:    
+                        print(f"OCR ERROR warning on file '{file_path.name}' at page '{page_index + 1}': {ocr_err}")
 
             if page_text:
                 pages_data.append({
