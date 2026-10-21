@@ -35,3 +35,28 @@ def chunk_text(text: str, filename: str, page: int, chunk_size: int = CHUNK_SIZE
         chunk_start += chunk_step 
 
     return chunks
+
+def chunk_document(sections: list[dict], chunk_size: int = CHUNK_SIZE, chunk_overlap: int = CHUNK_OVERLAP) ->list[dict]:
+    all_chunks= []
+    global_chunk_id= 0
+
+    for sec in sections:
+        filename = sec.get("filename", "unknown")
+        text = sec.get("text","")
+        page = sec.get("page", 1)
+
+        sec_chunks = chunk_text(
+            text = text,
+            filename = filename, 
+            page = page,
+            chunk_size = chunk_size,
+            chunk_overlap = chunk_overlap
+        )
+
+        for c in sec_chunks:
+            c["global_chunk_id"] = global_chunk_id
+            global_chunk_id += 1
+            all_chunks.append(c)
+
+    return all_chunks
+

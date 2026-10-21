@@ -1,13 +1,17 @@
 from src.config import DOCUMENTS_DIR
 from src.document_loader import load_documents
-from src.chunker import chunk_text
+from src.chunker import chunk_document
 
-docs = load_documents(DOCUMENTS_DIR)
-"""
-print(len(docs))
-for doc in docs:
-    print(doc["filename"], "-", doc["text"][:10])
-"""
+sections = load_documents(DOCUMENTS_DIR)
+chunks = chunk_document(sections)
 
-for c in chunk_text("ABCDEFGHIJ", "test", 1, chunk_size=4, chunk_overlap=1):
-    print(c["chunk_id"], c["text"])
+print("Sections loaded:", len(sections))
+print("Chunks created:", len(chunks))
+
+lengths = [len(c["text"]) for c in chunks]
+print("Longest chunk:", max(lengths))
+print("Shortest chunk:", min(lengths))
+
+for c in chunks[:3]:
+    print("\n---", c["filename"], "page", c["page"], "chunk", c["chunk_id"], "global", c["global_chunk_id"], "---")
+    print(c["text"][:200])
