@@ -1,17 +1,10 @@
-from src.config import DOCUMENTS_DIR
-from src.document_loader import load_documents
-from src.chunker import chunk_document
+from src.embeddings import embed_text
 
-sections = load_documents(DOCUMENTS_DIR)
-chunks = chunk_document(sections)
+a = embed_text("Kanye released Graduation Graduation")
+b = embed_text("Kanye released Graduation")
+c = embed_text("An apple a day keeps the doctor away")
 
-print("Sections loaded:", len(sections))
-print("Chunks created:", len(chunks))
-
-lengths = [len(c["text"]) for c in chunks]
-print("Longest chunk:", max(lengths))
-print("Shortest chunk:", min(lengths))
-
-for c in chunks[:3]:
-    print("\n---", c["filename"], "page", c["page"], "chunk", c["chunk_id"], "global", c["global_chunk_id"], "---")
-    print(c["text"][:200])
+# print((a == b).all())   # True: same text, same vector
+print(a[:4])
+print(b[:3])
+print(c[:3])            # totally different numbers
