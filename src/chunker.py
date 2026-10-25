@@ -36,7 +36,7 @@ def chunk_text(text: str, filename: str, page: int, chunk_size: int = CHUNK_SIZE
 
     return chunks
 
-def chunk_document(sections: list[dict], chunk_size: int = CHUNK_SIZE, chunk_overlap: int = CHUNK_OVERLAP) ->list[dict]:
+def chunk_documents(sections: list[dict], chunk_size: int = CHUNK_SIZE, chunk_overlap: int = CHUNK_OVERLAP) ->list[dict]:
     all_chunks= []
     global_chunk_id= 0
 

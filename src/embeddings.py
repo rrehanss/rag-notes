@@ -39,3 +39,17 @@ def embed_text(text: str, model: str = EMBEDDING_MODEL, is_query: bool= False) -
             f"Ensure Ollama is running and run 'ollama pull {model}'.\nError: {e}"
         )
 
+def embed_documents(chunks: list[dict], model: str = EMBEDDING_MODEL) -> np.ndarray:
+
+    if not chunks:
+        return np.empty((0,0), dtype=np.float32)
+    vectors = []
+    total = len(chunks)
+
+    for idx, chunk in enumerate(chunks, start=1):
+        if idx % 100 == 0 or idx == total or idx == 1:
+            print(f"Generating embedding for chunk [{idx}/{total}] for '{chunk.get('filename', 'unknown')}' ")
+        vec = embed_text(chunk["text"], model, is_query=False)
+        vectors.append(vec)
+
+    return np.vstack(vectors).astype(np.float32)

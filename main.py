@@ -1,10 +1,12 @@
-from src.embeddings import embed_text
+from src.config import DOCUMENTS_DIR
+from src.document_loader import load_documents
+from src.chunker import chunk_documents
+from src.embeddings import embed_documents
 
-a = embed_text("Kanye released Graduation Graduation")
-b = embed_text("Kanye released Graduation")
-c = embed_text("An apple a day keeps the doctor away")
+sections = load_documents(DOCUMENTS_DIR)
+chunks = chunk_documents(sections)
+vectors = embed_documents(chunks)
 
-# print((a == b).all())   # True: same text, same vector
-print(a[:4])
-print(b[:3])
-print(c[:3])            # totally different numbers
+print("Chunks:", len(chunks))
+print("Vectors shape:", vectors.shape)
+print("Type:", vectors.dtype)
